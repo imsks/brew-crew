@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:crew_brew/services/auth.dart';
 import 'package:crew_brew/utilities/constants.dart';
 
-class SignIn extends StatefulWidget {
+class Register extends StatefulWidget {
 
   final Function toggleView;
-  SignIn({ this.toggleView });
+  Register({ this.toggleView });
 
   @override
-  _SignInState createState() => _SignInState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _SignInState extends State<SignIn> {
+class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
-  final _formKey = GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
   bool loading = false;
 
   // Text field state
@@ -25,7 +25,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() :Scaffold(
+    return loading ? Loading() : Scaffold(
       backgroundColor: Colors.lightBlue[200],
       appBar: AppBar(
         backgroundColor: Colors.lightBlue,
@@ -40,7 +40,7 @@ class _SignInState extends State<SignIn> {
             }, 
             icon: Icon(Icons.person), 
             label: Text(
-              'Register'
+              'Sign in'
             )
           )
         ],
@@ -51,7 +51,7 @@ class _SignInState extends State<SignIn> {
           horizontal: 20
         ),
         child: Form(
-          key: _formKey,
+          key: _formkey,
           child: Column(
             children: [
               SizedBox(
@@ -61,7 +61,7 @@ class _SignInState extends State<SignIn> {
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter your email',
                 ),
-                validator: (val) => val.isEmpty ? "Enter an email" : null,
+                validator: (val) => val.isEmpty ? 'Enter an email' : null,
                 onChanged: (val) {
                   setState(() {
                     email = val;
@@ -76,7 +76,7 @@ class _SignInState extends State<SignIn> {
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter your password',
                 ),
-                validator: (val) => val.isEmpty ? "Enter correct password" : null,
+                validator: (val) => val.length < 6 ? 'Enter password with 6+ chars long' : null,
                 obscureText: true,
                 onChanged: (val) {
                   setState(() {
@@ -91,20 +91,20 @@ class _SignInState extends State<SignIn> {
               RaisedButton(
                 color: Colors.pink[400],
                 child: Text(
-                  'Sign in',
+                  'Register',
                   style: TextStyle(
                     color: Colors.white
                   ),
                 ),
                 onPressed: () async {
-                  if(_formKey.currentState.validate()) {
+                  if(_formkey.currentState.validate()) {
                     setState(() {
                       loading = true;
                     });
-                    dynamic result = await _auth.signInWithEmailAndPassword(email.trim(), password);
+                    dynamic result = await _auth.registerWithEmailAndPassword(email.trim(), password);
                     if(result == null) {
                       setState(() {
-                        error = 'Please enter correct email or password';
+                        error = 'Please provide valid email or password';
                         loading = false;
                       });
                     }
