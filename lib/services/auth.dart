@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:crew_brew/models/user.dart';
+import './database.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -9,6 +10,7 @@ class AuthService {
     return user != null ? User(uid: user.uid) : null;
   }
 
+  // TODO => Learn about map function in the context
   // auth change user stream
   Stream<User> get user {
     return _auth.onAuthStateChanged
@@ -33,6 +35,13 @@ class AuthService {
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+
+      // Create a new document for the user with the uid
+      await DatabaseService(uid: user.uid).updateUserData(
+        '0', 
+        'New Crew Member', 
+        100
+      );
       return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());
