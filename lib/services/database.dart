@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crew_brew/models/brew.dart';
+import 'package:crew_brew/models/user.dart';
 
 class DatabaseService {
 
@@ -28,8 +29,24 @@ class DatabaseService {
     }).toList();
   }
 
+  // userData from snapshot
+  UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
+    return UserData(
+      uid: uid,
+      name: snapshot.data['name'],
+      sugars: snapshot.data['sugars'],
+      strength: snapshot.data['strength']
+    );
+  }
+
   // Get Brews Stream
   Stream<List<Brew>> get brews {
     return brewCollection.snapshots().map(_brewListFromSnapshot);
+  }
+
+  // Get user document stream
+  Stream<UserData> get userData {
+    return brewCollection.document(uid).snapshots()
+    .map(_userDataFromSnapshot);
   }
 }
